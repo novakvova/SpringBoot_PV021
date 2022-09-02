@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 interface UserItem {
   age: number;
-  emasil: string;
+  email: string;
   id: number;
   image: string;
   password: string;
@@ -25,7 +25,7 @@ const HomePage = () => {
 
     const listUser = users.map((item) => (
       <tr key={item.id}>
-        <th>{item.emasil}</th>
+        <th>{item.email}</th>
         <td>{item.phone}</td>
         <td>{item.age}</td>
       </tr>
