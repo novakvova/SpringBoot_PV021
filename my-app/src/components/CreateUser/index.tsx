@@ -2,6 +2,7 @@ import { Form, FormikProvider, useFormik } from "formik";
 import { IUserCreate } from "./types";
 import http from "../../http_common";
 import { useNavigate } from "react-router-dom";
+import CropperDialog from "../common/CropperDialog";
 
 const CreateUserPage = () => {
     const initValues: IUserCreate = {
@@ -71,7 +72,8 @@ const CreateUserPage = () => {
                         />
                 </div>
 
-                <div className="mb-3">
+                <CropperDialog field="image" />
+                {/* <div className="mb-3">
                     <label htmlFor="image" className="form-label">Фото base64</label>
                     <input type="text" 
                         className="form-control" 
@@ -79,7 +81,7 @@ const CreateUserPage = () => {
                         name="image"
                         onChange={handleChange}
                         />
-                </div>
+                </div> */}
 
                 <div className="mb-3">
                     <label htmlFor="password" className="form-label">Пароль</label>
