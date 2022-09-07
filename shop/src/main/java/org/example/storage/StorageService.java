@@ -15,4 +15,5 @@ public interface StorageService {
     String store(String base64);
     Resource loadAsResource(String filename);
     void deleteAll();
+    void  removeFile(String removeFile);
 }

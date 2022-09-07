@@ -110,7 +110,9 @@ public class FileSystemStorageService implements StorageService {
                 //байти нового фото
                 byte [] newBytes = byteArrayOutputStream.toByteArray();
                 //байти збегіраємо у файлову систему на сервері
-                new FileOutputStream(directory).write(newBytes);
+                FileOutputStream out = new FileOutputStream(directory);
+                out.write(newBytes);
+                out.close();
             }
 
             return randomFileName; //Повертаємо назву файла
@@ -141,5 +143,18 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
+    }
+
+    @Override
+    public  void  removeFile(String removeFile){
+        int [] imageSize = {32, 150, 300, 600, 1200};
+        for (int size : imageSize) {
+            Path filePath = load(size+"_"+removeFile);
+            File file = new File(filePath.toString());
+            if (file.delete()) {
+                System.out.println(removeFile + " Файл видалено.");
+            } else System.out.println(removeFile + " Файл не знайдено.");
+        }
+
     }
 }

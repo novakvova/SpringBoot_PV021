@@ -2,6 +2,7 @@ package org.example.web;
 
 import lombok.RequiredArgsConstructor;
 import org.example.entities.User;
+import org.example.repositories.UserRepository;
 import org.example.storage.StorageService;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -18,18 +19,47 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HomeController {
     private final StorageService storageService;
-    private static List<User> users= new ArrayList<>();
+    //private static List<User> users= new ArrayList<>();
+    private final UserRepository userRepository;
     @GetMapping("/")
     public List<User> index() {
-        return users;
+        return userRepository.findAll();
     }
     @PostMapping("/create")
     public String add(@RequestBody User user) {
         //зберігаємо на сервер фото - результат ім'я фото на сервері в папці
         String fileName = storageService.store(user.getImage());
         user.setImage(fileName);
-        users.add(user);
+        //users.add(user);
+        userRepository.save(user);
         return "Ok";
+    }
+    @PutMapping("/update/{id}")
+    public String updateUser(@RequestBody User newUser, @PathVariable int id)
+    {
+        //User user = users.stream().filter(u->(u.getId()==id)).findFirst().orElse(null);
+        User user = userRepository.findById(id).get();
+        //User user = users.get(id);
+        user.setEmail(newUser.getEmail());
+        user.setImage(newUser.getImage());
+        user.setAge(newUser.getAge());
+        user.setPhone(newUser.getPhone());
+        user.setPassword(newUser.getPassword());
+
+        //users.set(id, user);
+        userRepository.save(user);
+        return "Ok";
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteUser(@PathVariable int id){
+        //User user = users.get(id);
+        //User user = users.stream().filter(u->(u.getId()==id)).findFirst().orElse(null);
+        User user = userRepository.findById(id).get();
+        storageService.removeFile(user.getImage());
+        //users.remove(user);
+        userRepository.delete(user);
+
     }
 
     @GetMapping("/files/{filename:.+}")
