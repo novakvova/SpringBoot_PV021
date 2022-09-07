@@ -6,6 +6,7 @@ import org.example.entities.Role;
 import org.example.entities.User;
 import org.example.repositories.RoleRepository;
 import org.example.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -14,7 +15,9 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class DatabaseSeed implements IDatabaseSeed {
 
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private RoleRepository roleRepository;
 
     @Override
