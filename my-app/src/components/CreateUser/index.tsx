@@ -86,16 +86,7 @@ const CreateUserPage = () => {
                 error={errors.image}
                 touched={touched.image}
               />
-              {/* <div className="mb-3">
-                    <label htmlFor="image" className="form-label">Фото base64</label>
-                    <input type="text" 
-                        className="form-control" 
-                        id="image"
-                        name="image"
-                        onChange={handleChange}
-                        />
-                </div> */}
-
+              
               <div className="mb-3">
                 <label htmlFor="password" className="form-label">
                   Пароль

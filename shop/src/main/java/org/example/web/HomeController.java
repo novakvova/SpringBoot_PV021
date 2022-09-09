@@ -1,7 +1,9 @@
 package org.example.web;
 
 import lombok.RequiredArgsConstructor;
+import org.example.dto.userdto.UserItemDTO;
 import org.example.entities.User;
+import org.example.mapper.ApplicationMapper;
 import org.example.repositories.UserRepository;
 import org.example.storage.StorageService;
 import org.springframework.core.io.Resource;
@@ -21,9 +23,11 @@ public class HomeController {
     private final StorageService storageService;
     //private static List<User> users= new ArrayList<>();
     private final UserRepository userRepository;
+    private final ApplicationMapper mapper;
     @GetMapping("/")
-    public List<User> index() {
-        return userRepository.findAll();
+    public List<UserItemDTO> index() {
+        List<UserItemDTO> users = mapper.usersToUserItemDTO_List(userRepository.findAll());
+        return users;
     }
     @PostMapping("/create")
     public String add(@RequestBody User user) {
