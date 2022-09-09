@@ -1,11 +1,18 @@
-import React, { LegacyRef, useState, useRef } from "react";
+import React, { LegacyRef, useState, useRef, useEffect } from "react";
 import { ICropperModal } from "./types";
 import Cropper from "cropperjs";
 import "cropperjs/dist/cropper.css";
 import classNames from "classnames";
 import "./style.css";
 
-const CropperDialog: React.FC<ICropperModal> = ({ field }) => {
+const CropperDialog: React.FC<ICropperModal> = ({ 
+  onChange,
+  field,
+  error,
+  touched,
+  value,
+  aspectRation=1/1
+ }) => {
   const [currentImage, setCurrentImage] = useState<string>(
     "https://cdn3.iconfinder.com/data/icons/photo-tools/65/select-512.png"
   );
@@ -25,9 +32,10 @@ const CropperDialog: React.FC<ICropperModal> = ({ field }) => {
         const fileType = file.type;
         if (fileType === "image/png") setUploadedImageType(file.type);
         else setUploadedImageType("image/jpeg");
-
+        const url = URL.createObjectURL(file);
         await toggleModal();
-        
+        await setImage(url);
+        cropperObj?.replace(url);
 
       } else {
         alert("Оберіть файл зображення");
@@ -40,18 +48,43 @@ const CropperDialog: React.FC<ICropperModal> = ({ field }) => {
     await setShow((prev)=>!prev);
   }
 
+  useEffect(() => {
+    if(imgRef.current)
+    {
+        const cropper = new Cropper(imgRef.current as HTMLImageElement, {
+            viewMode: 1,
+            aspectRatio: aspectRation,
+            preview: imgPrevRef.current
+        });
+        setCropperObj(cropper);
+    }
+  },[]);
+
+  const handleCroppedImage = async () => {
+    const base64 = cropperObj?.getCroppedCanvas().toDataURL(uploadedImageType) as string;
+    await setCurrentImage(base64);
+    await toggleModal();
+    await onChange(field, base64);
+  }
+
   return (
     <>
-      <label htmlFor="image">
+      <label htmlFor="imageFile">
         <img src={currentImage} style={{ cursor: "pointer" }} width="150" />
       </label>
       <input
         type="file"
         className="d-none"
-        id="image"
+        id="imageFile"
         accept="image/*"
         onChange={handleSelectImage}
       />
+
+      {error && touched && (
+        <div className="alert alert-danger" role="alert">
+          {error}
+        </div>
+      )}
 
       <div className={classNames("modal", { "custom-modal": show })}>
         <div className="modal-dialog modal-lg">
@@ -77,6 +110,7 @@ const CropperDialog: React.FC<ICropperModal> = ({ field }) => {
                 <div className="col-md-4 col-lg-3">
                   <div className="d-flex justify-content-center">
                     <div
+                      ref={imgPrevRef as LegacyRef<HTMLImageElement>}
                       style={{
                         height: "150px",
                         width: "150px",
@@ -97,7 +131,8 @@ const CropperDialog: React.FC<ICropperModal> = ({ field }) => {
               >
                 Скасувать
               </button>
-              <button type="button" className="btn btn-primary">
+              <button type="button" className="btn btn-primary"
+                  onClick={handleCroppedImage}>
                 Обрати фото
               </button>
             </div>
