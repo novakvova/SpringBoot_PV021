@@ -8,5 +8,6 @@ export interface UserItem {
   }
 
   export interface UserState {
-    list: Array<UserItem>
+    list: Array<UserItem>,
+    loading: boolean
   }
