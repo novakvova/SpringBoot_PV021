@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name="tbl_roles")
-public class Role {
+public class RoleEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -20,13 +20,13 @@ public class Role {
     private String name;
 
     @ManyToMany(mappedBy="roles")
-    private List<User> users;
+    private List<UserEntity> users;
 
-    public Role() {
-        users=new ArrayList<User>();
+    public RoleEntity() {
+        users=new ArrayList<UserEntity>();
     }
-    public Role(String name) {
+    public RoleEntity(String name) {
         this.name = name;
-        users=new ArrayList<User>();
+        users=new ArrayList<UserEntity>();
     }
 }

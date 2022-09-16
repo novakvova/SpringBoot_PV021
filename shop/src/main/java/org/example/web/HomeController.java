@@ -2,7 +2,7 @@ package org.example.web;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.userdto.UserItemDTO;
-import org.example.entities.User;
+import org.example.entities.UserEntity;
 import org.example.mapper.ApplicationMapper;
 import org.example.repositories.UserRepository;
 import org.example.storage.StorageService;
@@ -36,7 +36,7 @@ public class HomeController {
         return users;
     }
     @PostMapping("/create")
-    public String add(@RequestBody User user) {
+    public String add(@RequestBody UserEntity user) {
         //зберігаємо на сервер фото - результат ім'я фото на сервері в папці
         String fileName = storageService.store(user.getImage());
         user.setImage(fileName);
@@ -45,10 +45,10 @@ public class HomeController {
         return "Ok";
     }
     @PutMapping("/update/{id}")
-    public String updateUser(@RequestBody User newUser, @PathVariable int id)
+    public String updateUser(@RequestBody UserEntity newUser, @PathVariable int id)
     {
         //User user = users.stream().filter(u->(u.getId()==id)).findFirst().orElse(null);
-        User user = userRepository.findById(id).get();
+        UserEntity user = userRepository.findById(id).get();
         //User user = users.get(id);
         user.setEmail(newUser.getEmail());
         user.setImage(newUser.getImage());
@@ -65,7 +65,7 @@ public class HomeController {
     public void deleteUser(@PathVariable int id){
         //User user = users.get(id);
         //User user = users.stream().filter(u->(u.getId()==id)).findFirst().orElse(null);
-        User user = userRepository.findById(id).get();
+        UserEntity user = userRepository.findById(id).get();
         storageService.removeFile(user.getImage());
         //users.remove(user);
         userRepository.delete(user);
