@@ -30,11 +30,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserService userService;
-    //private final JwtTokenFilter jwtTokenFilter;
+    private final JwtTokenFilter jwtTokenFilter;
 
-    public SecurityConfig() {
+    public SecurityConfig(JwtTokenFilter jwtTokenFilter) {
         super();
-        //this.jwtTokenFilter = jwtTokenFilter;
+        this.jwtTokenFilter = jwtTokenFilter;
         // Inherit security context in async function calls
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
@@ -88,7 +88,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Add JWT token filter
 
 
-        //http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
     // Expose authentication manager bean
     @Override @Bean
