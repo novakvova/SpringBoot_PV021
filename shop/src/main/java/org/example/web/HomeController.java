@@ -1,6 +1,7 @@
 package org.example.web;
 
 import lombok.RequiredArgsConstructor;
+import org.example.dto.userdto.UserCreateDTO;
 import org.example.dto.userdto.UserItemDTO;
 import org.example.entities.UserEntity;
 import org.example.mapper.ApplicationMapper;
@@ -10,6 +11,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
@@ -36,12 +39,15 @@ public class HomeController {
         return users;
     }
     @PostMapping("/create")
-    public String add(@RequestBody UserEntity user) {
+
+    public String add(@RequestBody UserCreateDTO user) {
+        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         //зберігаємо на сервер фото - результат ім'я фото на сервері в папці
         String fileName = storageService.store(user.getImage());
-        user.setImage(fileName);
-        //users.add(user);
-        userRepository.save(user);
+        UserEntity userEntity = mapper.userCreateDtoToUserEntity(user);
+        userEntity.setImage(fileName);
+        userEntity.setPassword(encoder.encode(user.getPassword()));
+        userRepository.save(userEntity);
         return "Ok";
     }
     @PutMapping("/update/{id}")
