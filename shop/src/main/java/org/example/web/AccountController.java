@@ -33,7 +33,7 @@ public class AccountController {
     @PostMapping("login")
     public ResponseEntity<LoginSuccessDto> login(@RequestBody @Valid LoginDto loginDto) {
         try {
-            LoginSuccessDto loginUser = loginUser(loginDto.getUsername(), loginDto.getPassword());
+            LoginSuccessDto loginUser = loginUser(loginDto.getEmail(), loginDto.getPassword());
             return ResponseEntity.ok()
                     .body(loginUser);
         }catch(BadCredentialsException ex) {

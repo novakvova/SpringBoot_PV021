@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 public class LoginDto {
     @NotNull(message = "Вкажіть пошту")
     @Email(message = "Пошту вказано не коректно")
-    private String username;
+    private String email;
     @NotNull(message = "Вкажіть пароль")
     private String password;
 }
