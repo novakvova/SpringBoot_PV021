@@ -19,6 +19,12 @@ export interface IUser {
     exp: Date | null
 }
 
+export interface AuthState {
+    user?: IUser|undefined,
+    isAuth: boolean,
+    loading: boolean
+}
+
 
 export interface LoginAuthAction {
     type: AuthActionTypes.LOGIN_AUTH
