@@ -1,8 +1,13 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
+import { useTypedSelector } from "../../../hooks/useTypedSelector";
+import http from "../../../http_common";
 
 
 const Navbar: React.FC = () => {
+
+  const {isAuth, user} = useTypedSelector(store=>store.auth);
+  const url = http.defaults.baseURL;
   return (
     <header>
       <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -33,7 +38,21 @@ const Navbar: React.FC = () => {
                 </Link>
               </li>
             </ul>
-
+            {isAuth ? (
+              <ul className="navbar-nav">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/profile">
+                    <img src={url+"files/32_"+user?.image} />
+                    {user?.email}
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/">
+                    Вихід
+                  </Link>
+                </li>
+              </ul>
+            ) : (
               <ul className="navbar-nav">
                 <li className="nav-item">
                   <Link className="nav-link" to="/login">
@@ -46,7 +65,7 @@ const Navbar: React.FC = () => {
                   </Link>
                 </li>
               </ul>
-
+            )}
           </div>
         </div>
       </nav>

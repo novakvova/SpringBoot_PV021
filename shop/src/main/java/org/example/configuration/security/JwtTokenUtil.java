@@ -24,7 +24,8 @@ public class JwtTokenUtil {
     public String generateAccessToken(UserEntity user) {
         return Jwts.builder()
                 .setSubject(format("%s,%s", user.getId(), user.getEmail()))
-                .claim("username", user.getEmail())
+                .claim("email", user.getEmail())
+                .claim("image", user.getImage())
                 //.claim("roles", user.getUsername())
                 .setIssuer(jwtIssuer)
                 .setIssuedAt(new Date())
