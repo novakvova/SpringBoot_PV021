@@ -1,5 +1,6 @@
 package org.example.web;
 
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import org.example.dto.userdto.UserCreateDTO;
 import org.example.dto.userdto.UserItemDTO;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Api( tags = "Користувачі")
 public class HomeController {
     private final StorageService storageService;
     //private static List<User> users= new ArrayList<>();
