@@ -6,7 +6,8 @@ export enum AuthActionTypes {
 
 export interface ILogin {
     email: string,
-    password: string
+    password: string,
+    recaptchaToken?: string
 }
 
 export interface ILoginResponse {
