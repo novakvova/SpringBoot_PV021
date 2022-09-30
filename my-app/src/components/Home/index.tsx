@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from "../../http_common";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useTypedSelector } from "../../hooks/useTypedSelector";

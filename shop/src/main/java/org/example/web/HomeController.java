@@ -12,6 +12,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +34,10 @@ public class HomeController {
     private final ApplicationMapper mapper;
     @GetMapping("/")
     public List<UserItemDTO> index() {
+        //username info auth
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Object jwtUser = auth.getPrincipal();
+
         List<UserItemDTO> users = mapper.usersToUserItemDTO_List(userRepository.findAll());
         try {
             Thread.sleep(2000);

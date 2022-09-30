@@ -30,4 +30,10 @@ public class UserEntity {
             inverseJoinColumns = { @JoinColumn(name = "role_id") }
     )
     private List<RoleEntity> roles = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user")
+    private List<OrderEntity> orders;
+
+    @OneToMany(mappedBy = "user")
+    private List<BasketEntity> baskets;
 }
