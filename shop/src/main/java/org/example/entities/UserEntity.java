@@ -34,6 +34,6 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<OrderEntity> orders;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "basketId.user")
     private List<BasketEntity> baskets;
 }

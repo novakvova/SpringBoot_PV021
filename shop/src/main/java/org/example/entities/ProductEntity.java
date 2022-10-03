@@ -23,6 +23,15 @@ public class ProductEntity {
     @OneToMany(mappedBy = "product")
     private List<OrderItemEntity> orderItems;
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "basketId.product")
     private List<BasketEntity> baskets;
+
+    public ProductEntity() {
+    }
+
+    public ProductEntity(String name, double price, String description) {
+        this.name = name;
+        this.price = price;
+        this.description = description;
+    }
 }
