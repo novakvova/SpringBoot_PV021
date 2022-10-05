@@ -30,11 +30,21 @@ const Navbar: React.FC = () => {
             <ul className="navbar-nav me-auto mb-2 mb-md-0">
               <li className="nav-item">
                 <Link
-                  className="nav-link active"
+                  className="nav-link"
                   aria-current="page"
                   to="/create"
                 >
                   Додати користвача
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  aria-current="page"
+                  to="/products/create"
+                >
+                  Додати товар
                 </Link>
               </li>
             </ul>

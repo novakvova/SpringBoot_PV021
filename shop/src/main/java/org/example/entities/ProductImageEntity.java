@@ -15,7 +15,7 @@ public class ProductImageEntity {
     private String name;
     private int priority;
     @ManyToOne
-    @JoinColumn(name="product_id", nullable = false)
+    @JoinColumn(name="product_id", nullable = true)
     private ProductEntity product;
 
     public ProductImageEntity() {
