@@ -18,31 +18,34 @@ import static java.lang.String.format;
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtil {
-    private final String jwtSecret = "zdtlDeos873KjjuwodkLDPDpl99uyk3JKyy*did5sseII6m6wTTgsNFhqzjqP";
-    private final String jwtIssuer = "step.io";
+    private final String jwtSecret = "zdtlDeos873KjjuwodkLDPDplk3JKyy*did5sseII6m6wTTgsNFhqzjqP";  //ключ, яким ми шифруємо (будь-які букви чи цифри)
+    private final String jwtIssuer = "step.io";   //вказує хто власник цього токена. Можна вписати ім'я свого домена
 
+    //метод призначений для того, щоб для визначеного юзера зробити jwt token
     public String generateAccessToken(UserEntity user) {
+
         return Jwts.builder()
                 .setSubject(format("%s,%s", user.getId(), user.getEmail()))
                 .claim("email", user.getEmail())
                 .claim("image", user.getImage())
                 //.claim("roles", user.getUsername())
-                .setIssuer(jwtIssuer)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setIssuer(jwtIssuer) //записуємо хто власник токена
+                .setIssuedAt(new Date())  //коли був створений токен
+                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week  зазначаємо скільки часу буде жити токен
+                .signWith(SignatureAlgorithm.HS512, jwtSecret)  //шифруємо токен за допомогою сікретного ключа
                 .compact();
     }
 
+    // з токена можна витягнути Id юзера
     public String getUserId(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+                .setSigningKey(jwtSecret)    // перевіряється чи цей токен видавався нашим серваком
                 .parseClaimsJws(token)
                 .getBody();
 
-        return claims.getSubject().split(",")[0];
+        return claims.getSubject().split(",")[0]; //з токена бере перший елемент Id
     }
-
+    // з токена можна витягнути username юзера
     public String getUsername(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
@@ -51,7 +54,7 @@ public class JwtTokenUtil {
 
         return claims.getSubject().split(",")[1];
     }
-
+// метод повертає дату до якої живе токен
     public Date getExpirationDate(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
@@ -60,7 +63,7 @@ public class JwtTokenUtil {
 
         return claims.getExpiration();
     }
-
+//перевфряє чи наш токен валідний і чи видавався нашим сервером
     public boolean validate(String token) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);

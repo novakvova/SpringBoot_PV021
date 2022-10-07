@@ -148,7 +148,7 @@ public class ImageUtils
     }
 
     /**
-     * Creates a <code>BufferedImage</code> from an <code>Image</code>. This method can
+     * Creates a <code>BufferedImage</code> from an <code>Image</code>. This method can // I AM MAN
      * function on a completely headless system. This especially includes Linux and Unix systems
      * that do not have the X11 libraries installed, which are required for the AWT subsystem to
      * operate. This method uses nearest neighbor approximation, so it's quite fast. Unfortunately,
@@ -286,3 +286,4 @@ public class ImageUtils
         }
     }
 }
+

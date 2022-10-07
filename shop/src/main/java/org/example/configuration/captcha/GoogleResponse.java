@@ -1,6 +1,7 @@
 package org.example.configuration.captcha;
+
 import com.fasterxml.jackson.annotation.*;
-import lombok.Data;
+        import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)

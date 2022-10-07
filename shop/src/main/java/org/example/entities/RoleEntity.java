@@ -1,9 +1,6 @@
 package org.example.entities;
-
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,17 +13,16 @@ public class RoleEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(length = 200, nullable=false)
+    @Column(name="name", nullable = false, length = 250)
     private String name;
 
-    @ManyToMany(mappedBy="roles")
-    private List<UserEntity> users;
+    @ManyToMany(mappedBy = "roles")
+    private List<UserEntity> users = new ArrayList<UserEntity>();
+    public RoleEntity(){
 
-    public RoleEntity() {
-        users=new ArrayList<UserEntity>();
     }
-    public RoleEntity(String name) {
-        this.name = name;
-        users=new ArrayList<UserEntity>();
+    public RoleEntity(String name)
+    {
+        this.name=name;
     }
 }

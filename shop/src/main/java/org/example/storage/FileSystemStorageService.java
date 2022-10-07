@@ -1,5 +1,6 @@
 package org.example.storage;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -42,12 +43,15 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void store(MultipartFile file) {
+    public String store(MultipartFile file) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
+            String extension = FilenameUtils.getExtension(file.getOriginalFilename());
+            String fileName = UUID.randomUUID().toString()+"."+extension; //генеруємо унікальне ім'я
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(fileName));
+            return fileName;
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
@@ -72,12 +76,12 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public String store(String base64) {
         try {
-            if (base64.isEmpty()) {
+            if (base64.isEmpty()) {    //перевіряється чи файлік прийшов
                 throw new StorageException("Failed to store empty base64 ");
             }
-            UUID uuid = UUID.randomUUID();
+            UUID uuid = UUID.randomUUID(); //генеруємо унікальне ім'я
 
-            String [] charArray = base64.split(",");
+            String [] charArray = base64.split(","); //розділяємо код картинки на дві частини, відділяємо розширення
             String extension;
             System.out.println("-----------------"+ charArray[0]);
             switch (charArray[0]) {//check image's extension
@@ -89,39 +93,34 @@ public class FileSystemStorageService implements StorageService {
                     break;
             }
 
-            String randomFileName = uuid.toString()+"."+extension;
-            java.util.Base64.Decoder decoder = Base64.getDecoder();
-            byte[] bytes = new byte[0];
-            bytes = decoder.decode(charArray[1]);
+            String randomFileName = uuid.toString()+"."+extension; //робимо ім'я файліка: унікальне ім'я + розширення
+            java.util.Base64.Decoder decoder = Base64.getDecoder(); //створюємо екземпляр декодера
+            byte[] bytes = new byte[0]; // створюємо массив байтів
+            bytes = decoder.decode(charArray[1]); // декодуємо Base64 до вайтів
+            int [] imageSize = {32, 150, 300, 600, 1200}; // масив розмірів фотографій
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(bytes));
-            int [] imageSize = {32, 150, 300, 600, 1200};
-            for (int size : imageSize) {
-                String directory= rootLocation.toString() +"/"+size+"_"+randomFileName;
+            for(int size : imageSize){ // в циклі створюємо фотки кожного розміру
+                String directory= rootLocation.toString() +"/"+size+"_"+randomFileName; //створюємо папку де фотка буде зберігатися
 // My Example
-                //Робимо буфер для нової фотографії
-                //Нове фото робиться на основ старого фото, при цьому важливо вказати
-                //Формат фото - png, jpg, розмір фото - 600x600
-                //Ми отримує буфер для нового фото(оперативна память)
+//створюємо буфер для нової фотографії, де важливо вказуємо розширення яке буде у фотки та розмір (32х32, 150х150)
+                //по типу оперативна пам'ять
                 BufferedImage newImg = ImageUtils.resizeImage(image,
                         extension=="jpg"? ImageUtils.IMAGE_JPEG : ImageUtils.IMAGE_PNG, size,size);
-                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                //Фото записуємо у потік для отримання масиву файт
-                ImageIO.write(newImg, extension, byteArrayOutputStream);
-                //байти нового фото
-                byte [] newBytes = byteArrayOutputStream.toByteArray();
-                //байти збегіраємо у файлову систему на сервері
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream(); //створюємо Stream
+                //фото записуємо у потік для отримання масиву байтів
+                ImageIO.write(newImg, extension, byteArrayOutputStream); //за допомогою цього Stream записуємо в буфер фотографію згідно з розширенням
+                byte [] newBytes = byteArrayOutputStream.toByteArray(); //з цього Stream знову отримуємо байти
                 FileOutputStream out = new FileOutputStream(directory);
-                out.write(newBytes);
+                out.write(newBytes); //байти зберігаємо у фійлову систему на сервері
                 out.close();
-            }
 
-            return randomFileName; //Повертаємо назву файла
+            }
+            return randomFileName; //повертаємо назву файла
+
         } catch (Exception e) {
             throw new StorageException("Failed to store file ", e);
         }
     }
-
-
 
     @Override
     public Resource loadAsResource(String filename) {
@@ -144,7 +143,6 @@ public class FileSystemStorageService implements StorageService {
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
-
     @Override
     public  void  removeFile(String removeFile){
         int [] imageSize = {32, 150, 300, 600, 1200};
@@ -158,3 +156,4 @@ public class FileSystemStorageService implements StorageService {
 
     }
 }
+

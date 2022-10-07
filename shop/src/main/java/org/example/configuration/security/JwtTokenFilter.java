@@ -1,7 +1,7 @@
 package org.example.configuration.security;
 
 import lombok.RequiredArgsConstructor;
-import org.example.services.UserService;
+import org.example.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -35,7 +35,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-
+        //перевіряємо чи токен видавався нашим сервером
         // Get jwt token and validate
         final String token = header.split(" ")[1].trim();
         if (!jwtTokenUtil.validate(token)) {
@@ -46,8 +46,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         // Get user identity and set it on the spring security context
         UserDetails userDetails = userService
                 .loadUserByUsername(jwtTokenUtil.getUsername(token));
-
-        //Авторизуємо користуовача у системі
+        //авторизуємо користувача у системі
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(
                         userDetails, null,
@@ -58,7 +57,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        //модифкований реквест із аторизованим користувачем вертаємо.
+        //модифікований реквест із авторизованим користувачем
         chain.doFilter(request, response);
     }
 }

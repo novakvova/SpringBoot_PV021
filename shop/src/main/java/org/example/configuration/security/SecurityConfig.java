@@ -1,7 +1,7 @@
 package org.example.configuration.security;
 
 import org.example.constants.Roles;
-import org.example.services.UserService;
+import org.example.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -77,9 +77,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Set permissions on endpoints
         http.authorizeRequests()
                 // Swagger endpoints must be publicly accessible
-                .antMatchers("/").hasAuthority(Roles.Admin)
+                .antMatchers("/").permitAll()
 
-                .antMatchers("/create").hasAuthority(Roles.Admin)
+                .antMatchers("/create").permitAll()
 
                 .antMatchers("/api/products/upload").permitAll()
 
@@ -95,8 +95,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(String.format("%s/**", "/swagger-ui")).permitAll()
                 .anyRequest().authenticated();
         // Add JWT token filter
-
-
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
     // Expose authentication manager bean

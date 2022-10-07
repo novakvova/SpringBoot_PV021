@@ -1,10 +1,8 @@
 package org.example.entities;
 
 import lombok.Data;
-import org.springframework.data.mapping.KPropertyPathExtensionsKt;
 
 import javax.persistence.Embeddable;
-import javax.persistence.EmbeddedId;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
