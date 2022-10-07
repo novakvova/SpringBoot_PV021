@@ -1,14 +1,15 @@
 import { useState } from "react";
 import http_common from "../../../http_common";
+import { IProductImageSave } from "./types";
 
 const ProductCreatePage = () => {
 
-    const [images, setImages] =  useState<Array<string>>([]);
+    const [images, setImages] =  useState<Array<IProductImageSave>>([]);
 
     const handleSelectImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
         if (files && files.length) {
-            let listImg: Array<string>=[];
+            let listImg: Array<IProductImageSave>=[];
             for(let i=0; i<files.length; i++)
             {
                 console.log("---files length---", files.length);
@@ -17,15 +18,12 @@ const ProductCreatePage = () => {
                 var formData = new FormData();
                 formData.append("productimage", file);
                 
-                http_common.post("api/products/upload", formData, {
+                const response = await http_common.post<IProductImageSave>("api/products/upload", formData, {
                     headers: {
                       'Content-Type': 'multipart/form-data'
                     }
                 });
-
-
-                const url = URL.createObjectURL(file);
-                listImg.push(url);
+                listImg.push(response.data);
             }
             setImages([...images, ...listImg]);
 
@@ -46,8 +44,8 @@ const ProductCreatePage = () => {
         }
       };
 
-      const listImages = images.map((item, index) => (
-        <img key = {index}  src={item} width="100"/> 
+      const listImages = images.map((item) => (
+        <img key = {item.id}  src={"http://localhost:8080/files/" + item.fileName} width="100"/> 
       ));
 
     return (
